@@ -31,12 +31,12 @@ func JianhangSearch() {
 	query.Add("TXCODE", "NZX010")
 	query.Add("ADiv_Cd", "310000")
 	query.Add("Kywd_List_Cntnt", "")
-	query.Add("Enqr_MtdCd", "4")
+	query.Add("Enqr_MtdCd", "1")
 	query.Add("PAGE", "1")
 	query.Add("Cur_StCd", "4")
-	cookie := http.Cookie{Name: "tranCCBIBS1", Value: "R3IrdL8Cqvwqd6bZdD2CRMIiFr2AR0YXp22LS4oYS3vNioL4CxWieyIXJQ7bRd4slm1ISj4xpX6jSh4wlX5ETzYolTE44W", Expires: time.Now().Add(365 * 24 * time.Hour)}
+	cookie1 := http.Cookie{Name: "tranCCBIBS1", Value: "FafEmyT9rnXFiPCgq7YFhWCUdGUmRbC1dTkA19C2ey0PeYf5jRlBuSERuEU1VUH8d9ESx1BbfoUbRoFIdUUMlVDsdCUp1EQroQGpdW", Expires: time.Now().Add(365 * 24 * time.Hour)}
 	req.URL.RawQuery = query.Encode()
-	req.AddCookie(&cookie)
+	req.AddCookie(&cookie1)
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
@@ -67,7 +67,6 @@ func JianhangSearch() {
 		query.Set("PAGE", strconv.Itoa(i))
 		fmt.Print(query.Encode())
 		req.URL.RawQuery = query.Encode()
-		req.AddCookie(&cookie)
 		res, err := client.Do(req)
 		if err != nil {
 			fmt.Println(err)
