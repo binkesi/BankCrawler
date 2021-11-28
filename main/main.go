@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"time"
 )
@@ -33,7 +34,7 @@ func JianhangSearch() {
 	query.Add("Enqr_MtdCd", "4")
 	query.Add("PAGE", "1")
 	query.Add("Cur_StCd", "4")
-	cookie := http.Cookie{Name: "tranCCBIBS1", Value: "PTv%2C31lqRX9yr2CuQXbxiCKdMUZRICtdFkS1XCCeW0sdMBvpI3KK2LOnzkeV4HKdlEhx6Boe5E0pzKgen0odqGUdiEltGQBdVg", Expires: time.Now().Add(365 * 24 * time.Hour)}
+	cookie := http.Cookie{Name: "tranCCBIBS1", Value: "R3IrdL8Cqvwqd6bZdD2CRMIiFr2AR0YXp22LS4oYS3vNioL4CxWieyIXJQ7bRd4slm1ISj4xpX6jSh4wlX5ETzYolTE44W", Expires: time.Now().Add(365 * 24 * time.Hour)}
 	req.URL.RawQuery = query.Encode()
 	req.AddCookie(&cookie)
 	res, err := client.Do(req)
@@ -60,6 +61,29 @@ func JianhangSearch() {
 		fmt.Println(bank_data["CCBIns_Nm"])
 		fmt.Println(bank_data["Dtl_Adr"])
 		fmt.Println(bank_data["Fix_TelNo"])
+	}
+	total_page, _ := strconv.Atoi(data["TOTAL_PAGE"].(string))
+	for i := 2; i < total_page; i++ {
+		query.Set("PAGE", strconv.Itoa(i))
+		fmt.Print(query.Encode())
+		req.URL.RawQuery = query.Encode()
+		req.AddCookie(&cookie)
+		res, err := client.Do(req)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var data map[string]interface{}
+		err = json.NewDecoder(res.Body).Decode(&data)
+		if err != nil {
+			fmt.Println("decode error", err)
+		}
+		bank_list = data["OUTLET_DTL_LIST"].([]interface{})
+		for _, bank := range bank_list {
+			bank_data := bank.(map[string]interface{})
+			fmt.Println(bank_data["CCBIns_Nm"])
+			fmt.Println(bank_data["Dtl_Adr"])
+			fmt.Println(bank_data["Fix_TelNo"])
+		}
 	}
 }
 
