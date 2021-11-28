@@ -1,14 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 
 	"time"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 func JianhangSearch() {
@@ -34,7 +33,7 @@ func JianhangSearch() {
 	query.Add("Enqr_MtdCd", "4")
 	query.Add("PAGE", "1")
 	query.Add("Cur_StCd", "4")
-	cookie := http.Cookie{Name: "tranCCBIBS1", Value: "G4ecK7KlyO1xc8yz3vLgTJ7kqbZYnJokprH82JMlD7TlobHuWvI0HMW0BrGcGOBkcLi48I1l1L0oVMak%2Cre4dNlk1rM4NXvc6e", Expires: time.Now().Add(365 * 24 * time.Hour)}
+	cookie := http.Cookie{Name: "tranCCBIBS1", Value: "PTv%2C31lqRX9yr2CuQXbxiCKdMUZRICtdFkS1XCCeW0sdMBvpI3KK2LOnzkeV4HKdlEhx6Boe5E0pzKgen0odqGUdiEltGQBdVg", Expires: time.Now().Add(365 * 24 * time.Hour)}
 	req.URL.RawQuery = query.Encode()
 	req.AddCookie(&cookie)
 	res, err := client.Do(req)
@@ -45,16 +44,23 @@ func JianhangSearch() {
 	if res.StatusCode != 200 {
 		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
 	}
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-	fmt.Println(doc.Html())
+
+	//doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//doc.Find(".city_list2 j_atm_list .li_a").Each(func(i int, s *goquery.Selection) {
-	//	content := s.Find(".click_show").Text()
-	//	fmt.Printf("%d: %s\n", i, content)
-	//})
+	var data map[string]interface{}
+	err = json.NewDecoder(res.Body).Decode(&data)
+	if err != nil {
+		fmt.Println("decode error", err)
+	}
+	bank_list := data["OUTLET_DTL_LIST"].([]interface{})
+	for _, bank := range bank_list {
+		bank_data := bank.(map[string]interface{})
+		fmt.Println(bank_data["CCBIns_Nm"])
+		fmt.Println(bank_data["Dtl_Adr"])
+		fmt.Println(bank_data["Fix_TelNo"])
+	}
 }
 
 func main() {
