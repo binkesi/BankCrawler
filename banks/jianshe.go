@@ -12,6 +12,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Set query format both get cookie and use cookie.
 func AddQuery(query *url.Values, cityNum string, getCookie bool) {
 	if !getCookie {
 		query.Set("TXCODE", "NZX010")
