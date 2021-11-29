@@ -3,5 +3,5 @@ package main
 import "bankCrawler/banks"
 
 func main() {
-	banks.JianhangSearch("310000")
+	banks.JianhangSearch("哈尔滨")
 }
